@@ -71,9 +71,21 @@ public class SignupPage extends AppCompatActivity implements View.OnClickListene
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                FirebaseUser user = firebaseAuth.getCurrentUser();
-                                String userid = user.getUid();
-                                AddUser(userid);
+                                firebaseAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()){
+                                            Toast.makeText(getApplicationContext(),"Please check yor verify your Email",Toast.LENGTH_LONG).show();
+                                            FirebaseUser user = firebaseAuth.getCurrentUser();
+                                            String userid = user.getUid();
+                                            AddUser(userid);
+                                        }
+                                        else {
+                                            Toast.makeText(getApplicationContext(),"Wrong Email",Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
+
                             } else {
                                 Toast.makeText(getApplicationContext(), "Authentication failed.",
                                         Toast.LENGTH_SHORT).show();
@@ -89,7 +101,7 @@ public class SignupPage extends AppCompatActivity implements View.OnClickListene
         databaseReference.child(userid).setValue(newUser).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(getApplicationContext(),"Sindup Done",Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(),"Sindup Done",Toast.LENGTH_LONG).show();
                 Intent i = new Intent(SignupPage.this, MainActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);

@@ -59,12 +59,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+                                if(firebaseAuth.getCurrentUser().isEmailVerified()){
+                                    Intent homepage = new Intent(MainActivity.this,HomePage.class);
+                                    homepage.putExtra("Emailid",email.getText().toString());
+                                    homepage.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(homepage);
+                                    finish();
+                                }
+                                else {
+                                    Toast.makeText(getApplicationContext(),"Email is not verified",Toast.LENGTH_LONG).show();
+                                }
 
-                                Intent homepage = new Intent(MainActivity.this,HomePage.class);
-                                homepage.putExtra("Emailid",email.getText().toString());
-                                homepage.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(homepage);
-                                finish();
 
                             } else {
                                 Toast.makeText(getApplicationContext(),"Wrong passsword",Toast.LENGTH_LONG).show();
